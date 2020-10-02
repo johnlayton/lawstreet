@@ -33,3 +33,6 @@ helm upgrade -i helm-operator fluxcd/helm-operator --wait \
   --set git.pollInterval=1m \
   --set chartsSyncInterval=1m \
   --set helm.versions=v3
+
+logger info "Start minikube tunnel"
+minikube tunnel
