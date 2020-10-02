@@ -1,3 +1,4 @@
+---
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
@@ -17,7 +18,7 @@ spec:
   values:
     image:
       repository: stefanprodan/podinfo
-      tag: 3.1.0
+      tag: 3.0.5
     service:
       enabled: true
       type: ClusterIP
@@ -25,4 +26,4 @@ spec:
       enabled: true
       path: /
       hosts:
-        - podinfo.app.xip.io
+      - podinfo.app.xip.io
