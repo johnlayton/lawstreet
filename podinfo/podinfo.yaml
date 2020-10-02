@@ -1,28 +1,53 @@
----
-apiVersion: helm.fluxcd.io/v1
-kind: HelmRelease
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: podinfo
-  namespace: default
+  labels:
+    app: podinfo
   annotations:
     fluxcd.io/ignore: "false"
-    fluxcd.io/automated: "false"
-    fluxcd.io/tag.chart-image: semver:~3.0
+    fluxcd.io/automated: "true"
+    fluxcd.io/tag.realtime: podinfo:~5.0
+    fluxcd.io/locked: 'true'
 spec:
-  releaseName: podinfo
-  chart:
-    git: git@github.com:johnlayton/monakplace
-    ref: master
-    path: cluster/charts/podinfo
-  values:
-    image:
-      repository: stefanprodan/podinfo
-      tag: 3.1.0
-    service:
-      enabled: true
-      type: ClusterIP
-    ingress:
-      enabled: true
-      path: /
-      hosts:
-      - podinfo.app.xip.io
+  selector:
+    matchLabels:
+      app: podinfo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: podinfo
+    spec:
+      containers:
+        - name: podinfo
+          image: stefanprodan/podinfo:5.0.1
+          ports:
+            - containerPort: 9898
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+  labels:
+    app: podinfo
+spec:
+  ports:
+    - port: 80
+      targetPort: 9898
+  selector:
+    app: podinfo
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: podinfo-ingress
+spec:
+  rules:
+    - host: podinfo.app.xip.io
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: podinfo
+              servicePort: 80
