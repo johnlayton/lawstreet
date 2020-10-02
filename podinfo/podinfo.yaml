@@ -1,10 +1,8 @@
----
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
   name: podinfo
-  labels:
-    app: podinfo
+  namespace: default
   annotations:
     fluxcd.io/ignore: "false"
 spec:
