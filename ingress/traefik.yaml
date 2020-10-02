@@ -1,0 +1,19 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: default
+  annotations:
+    fluxcd.io/ignore: "false"
+spec:
+  releaseName: traefik
+  chart:
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    name: traefik
+    version: 1.78.0
+  values:
+    serviceType: LoadBalancer
+    rbac:
+      enabled: true
+    dashboard:
+      enabled: true
