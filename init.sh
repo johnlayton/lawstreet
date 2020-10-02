@@ -19,7 +19,8 @@ helm upgrade -i flux fluxcd/flux --wait \
   --namespace flux \
   --set registry.pollInterval=1m \
   --set git.pollInterval=1m \
-  --set git.url=git@github.com:johnlayton/lawstreet
+  --set git.url=git@github.com:johnlayton/lawstreet \
+  --set git.branch=main
 
 logger info "Get the deployment key and add to repo"
 fluxctl identity --k8s-fwd-ns flux
