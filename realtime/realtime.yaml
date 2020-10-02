@@ -54,7 +54,7 @@ metadata:
   name: realtime-ingress
 spec:
   rules:
-    - host: realtime.192.168.99.120.xip.io
+    - host: realtime.10.96.189.212.xip.io
       http:
         paths:
           - path: /
