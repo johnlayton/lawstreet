@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realtime
+  labels:
+    app: realtime
+  annotations:
+    fluxcd.io/ignore: "false"
+    fluxcd.io/automated: "true"
+    fluxcd.io/tag.realtime: semver:~1.0
+    fluxcd.io/locked: 'true'
+spec:
+  selector:
+    matchLabels:
+      app: realtime
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: realtime
+    spec:
+      containers:
+        - name: realtime
+          image: gbaeke/fluxapp:1.0.0
+          env:
+            - name: REDISHOST
+              value: "redis:6379"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 50Mi
+            limits:
+              cpu: 150m
+              memory: 150Mi
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: realtime
+  labels:
+    app: realtime
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: realtime
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: realtime-ingress
+spec:
+  rules:
+    - host: realtime.192.168.99.120.xip.io
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: realtime
+              servicePort: 80
